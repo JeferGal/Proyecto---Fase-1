@@ -1,0 +1,165 @@
+/* Estilo Global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilos de body y ajuste de fondo */
+body {
+    background-image: url(../img/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container principal */
+.main-container{
+    margin-top: 50px;
+    width: 80%;
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0 15px 25px rgb(0, 0, 0);
+    
+}
+
+/* Estilo de saludo en la pantalla inicio */
+.saludo
+{
+    font-weight:bold;
+    color:#f0b51c;
+    font-size: 2rem;
+    display: block;
+    text-transform:uppercase ;
+    margin-top: 10px;
+    text-shadow:0.5px -1px 1px #fff;
+}
+
+/* Estilo del subtitulo en la pantalla de inicio */
+.saludo2
+{
+    font-weight:bold;
+    color:#3362ad;
+    font-size: 1.5rem;
+    left:29px;
+    top:30px;
+    text-shadow:0.5px 0px 1px #fff;
+    letter-spacing: 1px;
+}
+
+/* Ajuste de Pantalla de inicio */
+.inicio-screen{
+    padding-bottom: 100px !important;
+    
+    width: 100%;
+}
+
+/* Estilos generales para contenedores */
+.container {
+    
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+}   
+
+/* Estilos h */
+h2 {
+    margin-bottom: 1.5rem;
+    color:#fff
+}
+
+h3 {
+    color: #ffffff; 
+}
+
+/* Ajuste para el input de Pin */
+input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Boton Volver */
+.btn-back{
+    width: 15%;
+}
+
+/* Estlo general de los botones */
+button {
+    background-color: #0073e6;
+    color: rgb(244, 244, 244);
+    border: none;
+    padding: 0.75rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+}
+
+/* Efecto hover en botones */
+button:hover {
+    background-color: #005bb5;
+}
+
+.actions {
+    margin-top: 1rem;
+    
+}
+
+.container-btn button{
+    margin-top: 15px;
+    width: 70%;
+    height: auto;
+}
+
+#transaction-history {
+    list-style-type: none;
+    padding: 1rem;
+}
+
+#transaction-history li {
+    margin-bottom: 0.5rem;
+    background-color: #f9f9f9;
+    padding: 0.75rem;
+    border-radius: 5px;
+}
+
+canvas {
+    width: 100%;
+    height: 200px;
+}
+
+#transactionsChart {
+    max-width: 100%;
+}
+
+/* Botones numericos */
+.btnum{
+    width: 70px;
+    height: 50px;
+    background: rgb(143, 143, 143);
+    border: 4px solid rgb(11, 10, 10);
+    border-radius: 10%;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    font-weight: bolder;
+}
+
+/* Botones de operación */
+.btnop{
+    width: 100px;
+    height: 50px;
+    border: 3px solid #000;
+    background-color: silver;
+    margin-bottom: 5px;
+    border-radius: 10%;
+    font-size: 1rem;
+    font-weight: bolder;
+}
