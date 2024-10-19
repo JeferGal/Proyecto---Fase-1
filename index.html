@@ -27,7 +27,7 @@
     <!-- Botones de acciones -->
         <div class="row container-btn">
             <div class="col-md-6 actions">
-                <button class="btn btn-primary" onclick="deposit()">Depositar</button>
+                <button class="btn btn-primary" onclick="showDepositMenu()">Depositar</button>
                 <button class="btn btn-primary" onclick="withdraw()">Retirar</button>
                 <button class="btn btn-primary" onclick="checkBalance()">Consultar Saldo</button>
                 <button class="btn btn-primary" onclick="payServices()">Pago de Servicios</button>
@@ -40,6 +40,21 @@
             </div>
         </div>
     </div>
+    <!-- Pantalla de Depósito (oculta por defecto) -->
+<div id="deposit-screen" style="display:none;">
+    <h3>Saldo Actual $XXX.XX</h3>
+    <h3>Cantidad a Depositar</h3><label for="cantidad">Cantidad: </label>
+    <input type="number" id="cantidad" />
+
+</div>
+
+<!-- Pantalla de Retirar (oculta por defecto) -->
+<div id="withdraw-screen" style="display:none;">
+    <h3>Saldo Actual $XXX.XX</h3>
+    <h3>Cantidad a Retirar</h3><label for="cantidad">Cantidad: </label>
+    <input type="number" id="cantidad" />
+
+</div>
 
     <!-- Pantalla de historial de transacciones -->
         <div class="container" id="history-screen" style="display:none;">
@@ -84,7 +99,7 @@
                         <button class="mx-2 btnum" id="b7">7</button>
                         <button class="mx-2 btnum" id="b8">8</button>
                         <button class="mx-2 btnum" id="b9">9</button>
-                        <button class="bg-danger btnop" id="cancelar">CANCEL</button>
+                        <button class="bg-danger btnop" id="cancelar" onclick="cancelDeposit(); cancelWithdraw()">CANCEL</button> 
                     </div>
                </div>
     
