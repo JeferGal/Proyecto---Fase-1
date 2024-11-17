@@ -11,34 +11,40 @@ let btn9 = document.getElementById("b9");
 let btn0 = document.getElementById("b0");
 let btn11= document.getElementById("b11")
 let clear = document.getElementById("limpiar");
-let ok = document.getElementById("entrar");
+//let ok = document.getElementById("entrar");
 let errorCuenta = document.getElementById("errorNum");
 let screen_deposit = document.getElementById("deposit-screen")
 let withdraw_screen = document.getElementById("withdraw-screen")
+const pinCorrecto = "1234"; // PIN válido para comparación
+const pinIngresado = document.getElementById("pin-input").value.trim();
+let intentos = 0;
+const maxIntentos = 3;
+
+
 
 let cuentaUsuario = {
   balance: 500,
   transacciones: []
 };
 
-let campoActivo = null; // Mantendrá referencia al campo de entrada actual
+let campoActivo = null; // Mantendrá referencia al campo de entrada actual 
 
-// Cuando el campo cantidad esté activo
-document.getElementById("cantidad").addEventListener("focus", function () {
-    campoActivo = this; // Asigna el campo cantidad como activo
+document.getElementById("pin-input").addEventListener("focus", function () {
+  campoActivo = this;
 });
 
-// Si quieres manejar otros campos en el futuro, puedes repetir este patrón para cada campo
+
 
 
 
 function agregarValorTeclado(valor) {
   if (campoActivo) {
-      campoActivo.value = campoActivo.value + valor; // Agrega el valor al campo activo
+    campoActivo.value += valor; // Agrega el valor al final del campo activo
   } else {
-      cuenta.textContent = cuenta.textContent + valor; // Si no hay campo activo, usa cuenta
+    console.warn("No hay campo activo para ingresar valores.");
   }
 }
+
 
 // Modificar los eventos de botones
 btn1.onclick = function () { agregarValorTeclado("1"); };
@@ -56,11 +62,10 @@ btn0.onclick = function () { agregarValorTeclado("0"); };
 // CLEAR
 clear.addEventListener("click", () => {
   if (campoActivo) {
-      campoActivo.value = ""; // Limpia el campo activo
-  } else {
-      cuenta.textContent = ""; // Limpia el número de cuenta
+    campoActivo.value = ""; // Limpia el campo activo
   }
 });
+
 
 
 
@@ -68,14 +73,37 @@ btn11.addEventListener("click", depositar);
 
 // Evento al presionar ENTER
 
-ok.onclick = function () {
-  if (cuenta.textContent === "1234") {
-      screenPin(); // Cambia a la pantalla de PIN
-  } else {
-      alert("Número de cuenta incorrecto");
-      cuenta.textContent = ""; // Limpia el campo si el número de cuenta es incorrecto
-  }
-};
+document.querySelectorAll(".btnop").forEach(button => {
+  button.addEventListener("click", () => {
+      if (withdraw_screen.style.display === "block") {
+          retirar();
+          cancelWithdraw();
+      } else if (screen_deposit.style.display === "block") {
+          depositar();
+          cancelDeposit();
+      } else {
+          // Validación de PIN
+          const pinIngresado = document.getElementById("pin-input").value.trim();
+          if (pinIngresado === pinCorrecto) {
+              alert("PIN correcto, bienvenido.");
+              document.getElementById("actions-screen").style.display = "block";
+              document.getElementById("inicio").style.display = "none";
+              document.getElementById("pin-input").value = ""; // Limpiar campo
+              intentos = 0;
+          } else {
+              intentos++;
+              alert(`PIN incorrecto. Intentos restantes: ${maxIntentos - intentos}`);
+              document.getElementById("pin-input").value = ""; // Limpiar para nuevo intento
+              if (intentos >= maxIntentos) {
+                  alert("Cuenta bloqueada. Comuníquese con el banco.");
+                  button.disabled = true; // Deshabilitar botones
+              }
+          }
+      }
+  });
+});
+
+
 
 let enter2 = document.getElementById("entrar2");
 enter2.addEventListener("click", () => {
@@ -88,73 +116,9 @@ enter2.addEventListener("click", () => {
 
 
 
-/*let enterButton = document.getElementById("entrar");
-enterButton.addEventListener("click", () => {
-  if (withdraw_screen.style.display === "block") {
-      retirar(); // Realiza el retiro si estás en la pantalla de retiro
-      cancelDeposit();
-  } else if (screen_deposit.style.display === "block") {
-      depositar(); // Realiza el depósito si estás en la pantalla de depósito
-      cancelDeposit();
-  } else {
-      // Lógica para otras acciones como validar número de cuenta o PIN
-      if (cuenta.textContent === "1234") {
-          screenPin();
-      } else {
-          alert("Número de cuenta incorrecto");
-          cuenta.textContent = "";
-      }
-  }
-});*/
-
-/*let enterButton = document.getElementById("entrar");
-enterButton.addEventListener("click", () => {
-    if (screen_deposit.style.display === "block") {
-        depositar(); // Realiza el depósito si estás en la pantalla de depósito
-        cancelDeposit();
-    } else {
-        // Lógica para otros casos, como validar número de cuenta o PIN
-        if (cuenta.textContent === "1234") {
-            screenPin();
-        } else {
-            alert("Número de cuenta incorrecto");
-            cuenta.textContent = "";
-        }
-    }
-});*/
-
-
-
-
-
 function logout() {
   document.getElementById("actions-screen").style.display = "none";
   document.getElementById("inicio").style.display = "block";
-}
-
-// Funcion que cambia a la pantalla de PIN
-function screenPin() {
-  console.log(cuenta.textContent);
-  cuenta.textContent = "";
-  var saludo2 = document.querySelector(".saludo2"); //Cambiar el texto de bienvenida para pedir PIN
-  saludo2.innerHTML = "Ingresar PIN"; //Actualizar mensaje en la pantalla
-  console.log(cuenta.textContent);
-  console.log(saludo2);
-
-//   Nuevo span donde se muestre el pin introducido
-  var spanPin = document.createElement("span");
-  spanPin.setAttribute("id", "pin");
-  spanPin.setAttribute("class", "text-light");
-
-// Evento del boton ENTER para validar el pin  
-  ok.onclick = function () {
-    document.getElementById("actions-screen").style.display = "block";
-    document.getElementById("inicio").style.display = "none";
-    // var pinData = document.getElementById("pin");
-
-    // console.log(pinData.textContent);
-    console.log(spanPin.getAttribute("id"));
-  };
 }
 
 // Funcion para mostrar la pantalla del historial de transacciones
@@ -187,33 +151,36 @@ function viewGraph() {
 
 // Función para volver a la pantalla de acciones desde el historial o el gráfico
 function backToActions() {
-  // Ocultar todas las pantallas extra al regresar al menú principal
+  // Ocultar todas las pantallas secundarias
   document.getElementById("deposit-screen").style.display = "none";
   document.getElementById("withdraw-screen").style.display = "none";
+  document.getElementById("history-screen").style.display = "none"; // Ocultar la pantalla de historial
+  document.getElementById("graph-screen").style.display = "none"; // Por si usas la gráfica
 
-  // Mostrar pantalla principal
+  // Mostrar la pantalla principal de acciones
   document.getElementById("actions-screen").style.display = "block";
-
-  // Reseteo o limpieza visual
-  document.getElementById("cantidad").value = "";
 }
+
 
 function showDepositMenu() {
   screen_deposit.style.display = "block";
   document.getElementById("actions-screen").style.display = "none";
-  document.getElementById("cantidad-deposito").focus(); // Forzar foco en cantidad-deposito
-  campoActivo = document.getElementById("cantidad-deposito"); // Actualiza campoActivo
-  toggleEnterButtons(false); // Mostrar ENTER2
-  updateBalanceDisplay();
+  document.getElementById("cantidad-deposito").focus();
+  campoActivo = document.getElementById("cantidad-deposito"); // Actualiza el campo activo
+
+  updateBalanceDisplay(); // Asegúrate de llamar a esta función para actualizar el saldo
 }
+
 
 function withdraw() {
   withdraw_screen.style.display = "block";
   document.getElementById("actions-screen").style.display = "none";
-  document.getElementById("cantidad-retiro").focus(); // Forzar foco en cantidad-retiro
-  campoActivo = document.getElementById("cantidad-retiro"); // Actualiza campoActivo
-  toggleEnterButtons(false); // Mostrar ENTER2
+  document.getElementById("cantidad-retiro").focus();
+  campoActivo = document.getElementById("cantidad-retiro"); // Actualiza el campo activo
+  toggleEnterButtons(false);
 }
+
+
 
 
 
@@ -237,6 +204,7 @@ function depositar() {
 
 function retirar() {
   const monto = parseFloat(document.getElementById("cantidad-retiro").value);
+  console.log("Monto a retirar: ", monto);
 
   if (!isNaN(monto) && monto > 0) {
       if (monto <= cuentaUsuario.balance) {
@@ -260,8 +228,8 @@ function retirar() {
 
 
 function updateBalanceDisplay() {
-  const balanceDepositElement = document.querySelector("#deposit-screen h3:first-child");
-  const balanceWithdrawElement = document.querySelector("#withdraw-screen h3:first-child");
+  const balanceDepositElement = document.querySelector("#deposit-screen h3:first-child"); // Selecciona el elemento del saldo en la pantalla de depósito
+  const balanceWithdrawElement = document.querySelector("#withdraw-screen h3:first-child"); // Selecciona el elemento del saldo en la pantalla de retiro
 
   if (balanceDepositElement) {
       balanceDepositElement.textContent = `Saldo Actual: $${cuentaUsuario.balance.toFixed(2)}`;
@@ -271,6 +239,7 @@ function updateBalanceDisplay() {
       balanceWithdrawElement.textContent = `Saldo Actual: $${cuentaUsuario.balance.toFixed(2)}`;
   }
 }
+
 
 
 
@@ -286,17 +255,139 @@ function cancelWithdraw() {
   toggleEnterButtons(true); // Restaurar ENTER original
 }
 
-function toggleEnterButtons(showEnter) {
-  let enter1 = document.getElementById("entrar"); // Botón ENTER original
-  let enter2 = document.getElementById("entrar2"); // Botón ENTER2 para depósito/retiro
+function checkBalance() {
+  const saldoActual = cuentaUsuario.balance.toFixed(2); // Formatea el saldo a 2 decimales
+  alert(`Tu saldo es $${saldoActual}`);
+}
 
-  if (showEnter) {
-      enter1.style.display = "inline-block"; // Mostrar ENTER original
-      enter2.style.display = "none"; // Ocultar ENTER2
-  } else {
-      enter1.style.display = "none"; // Ocultar ENTER original
-      enter2.style.display = "inline-block"; // Mostrar ENTER2
+function viewHistory() {
+  // Ocultar otras pantallas
+  document.getElementById("actions-screen").style.display = "none";
+  document.getElementById("history-screen").style.display = "block";
+
+  const historyList = document.getElementById("transaction-history"); // Lista en la pantalla de historial
+  historyList.innerHTML = ""; // Limpiar el historial antes de mostrar
+
+  // Iterar sobre el arreglo de transacciones
+  cuentaUsuario.transacciones.forEach(transaccion => {
+      const listItem = document.createElement("li");
+      listItem.textContent = `${transaccion.fecha} - ${transaccion.tipo}: $${transaccion.monto.toFixed(2)}`;
+      historyList.appendChild(listItem);
+  });
+
+  if (cuentaUsuario.transacciones.length === 0) {
+      historyList.innerHTML = "<li>No hay transacciones registradas.</li>";
   }
 }
+
+function viewGraph() {
+  // Ocultar la pantalla de acciones y mostrar la pantalla de gráfico
+  document.getElementById("actions-screen").style.display = "none";
+  document.getElementById("graph-screen").style.display = "block";
+
+  const ctx = document.getElementById("transactionsChart").getContext("2d");
+
+  // Extraer los datos del historial de transacciones
+  const labels = cuentaUsuario.transacciones.map((transaccion, index) => `Transacción ${index + 1}`);
+  const data = cuentaUsuario.transacciones.map(transaccion => transaccion.monto);
+  const tipos = cuentaUsuario.transacciones.map(transaccion => transaccion.tipo);
+
+  // Crear un gráfico de barras
+  new Chart(ctx, {
+      type: 'bar', // Puedes cambiar a 'line', 'pie', etc.
+      data: {
+          labels: labels, // Etiquetas para cada transacción
+          datasets: [{
+              label: 'Monto de Transacciones',
+              data: data, // Datos de montos
+              backgroundColor: tipos.map(tipo => tipo === 'Depósito' ? 'green' : 'red'), // Color según tipo
+              borderColor: 'black',
+              borderWidth: 1
+          }]
+      },
+      options: {
+          responsive: true,
+          plugins: {
+              legend: {
+                  display: true
+              },
+              tooltip: {
+                  callbacks: {
+                      label: function(tooltipItem) {
+                          return `${tipos[tooltipItem.dataIndex]}: $${tooltipItem.raw.toFixed(2)}`;
+                      }
+                  }
+              }
+          },
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+}
+
+function cancelAll() {
+  // Ocultar todas las pantallas secundarias
+  document.getElementById("actions-screen").style.display = "none";
+  document.getElementById("deposit-screen").style.display = "none";
+  document.getElementById("withdraw-screen").style.display = "none";
+  document.getElementById("history-screen").style.display = "none";
+  document.getElementById("graph-screen").style.display = "none";
+  document.getElementById("actions-screen").style.display = "none";
+  document.getElementById("pay-services-screen").style.display = "none";
+  
+
+
+  // Mostrar la pantalla de inicio (PIN)
+  document.getElementById("inicio").style.display = "block";
+
+  // Limpiar el campo de PIN y resetear el estado del sistema
+  document.getElementById("pin-input").value = ""; 
+  intentos = 0; // Reinicia los intentos de PIN si aplica
+}
+
+function payServices() {
+  document.getElementById("actions-screen").style.display = "none";
+  document.getElementById("pay-services-screen").style.display = "block";
+
+  // Mostrar el saldo actual
+  document.getElementById("current-balance").textContent = cuentaUsuario.balance.toFixed(2);
+}
+
+function payService() {
+  const servicio = document.getElementById("service-type").value;
+  const monto = parseFloat(document.getElementById("cantidad-servicio").value);
+
+  if (!isNaN(monto) && monto > 0) {
+      if (monto <= cuentaUsuario.balance) {
+          // Deducir del saldo
+          cuentaUsuario.balance -= monto;
+
+          // Registrar la transacción en el historial
+          cuentaUsuario.transacciones.push({
+              tipo: `Pago de ${servicio.charAt(0).toUpperCase() + servicio.slice(1)}`,
+              monto: monto,
+              fecha: new Date().toLocaleString()
+          });
+
+          alert(`Pago de ${servicio} exitoso. Nuevo saldo: $${cuentaUsuario.balance.toFixed(2)}`);
+
+          // Actualizar el saldo mostrado
+          document.getElementById("current-balance").textContent = cuentaUsuario.balance.toFixed(2);
+          document.getElementById("cantidad-servicio").value = ""; // Limpiar el campo
+      } else {
+          alert("Saldo insuficiente para realizar este pago.");
+      }
+  } else {
+      alert("Por favor, ingrese un monto válido.");
+  }
+}
+
+
+
+
+
 
 
